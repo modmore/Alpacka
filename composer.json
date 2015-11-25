@@ -1,0 +1,14 @@
+{
+    "name": "modmore/alpacka",
+    "description": "Generic service class and collection of utilities for modmore products",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "modmore",
+            "email": "support@modmore.com"
+        }
+    ],
+    "require": {
+        "pimple/pimple": "~3.0"
+    }
+}
