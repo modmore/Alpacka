@@ -14,16 +14,27 @@ class Alpacka
     public $wctx;
     /** @var \modResource */
     public $resource;
+    public $version;
+    public $pathVariables;
 
     /**
-     * @param \modX $modx
+     * The main contructor for Alpacka. This doesn't hardcode the instance to the modX class as that might change in
+     * the future, and we don't want to manually update all derivative service classes when that happens.
+     *
+     * @param \modX $instance
      * @param array $config
      */
-    public function __construct(\modX &$modx, array $config = array())
+    public function __construct($instance, array $config = array())
     {
-        $this->modx = $modx;
+        $this->modx = $instance;
+        $this->setVersion();
         $this->services = new Container();
         $this->registerServices();
+    }
+
+    public function setVersion()
+    {
+        $this->version = new Version(1, 0, 0, 'pl');
     }
 
     public function registerServices()
@@ -144,11 +155,11 @@ class Alpacka
     {
         $iconv = function_exists('iconv');
         $charset = strtoupper((string)$this->getOption('modx_charset', null, 'UTF-8'));
-        $translit = $this->getOption('contentblocks.translit', null,
+        $translit = $this->getOption('alpacka.translit', null,
             $this->getOption('friendly_alias_translit', null, 'none'), true);
-        $translitClass = $this->getOption('contentblocks.translit_class', null,
+        $translitClass = $this->getOption('alpacka.translit_class', null,
             $this->getOption('friendly_alias_translit_class', null, 'translit.modTransliterate'), true);
-        $translitClassPath = $this->getOption('contentblocks.translit_class_path', null,
+        $translitClassPath = $this->getOption('alpacka.translit_class_path', null,
             $this->getOption('friendly_alias_translit_class_path', null,
                 $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/'), true);
         switch ($translit) {
@@ -174,8 +185,8 @@ class Alpacka
                 break;
         }
 
-        $replace = $this->getOption('contentblocks.sanitize_replace', null, '_');
-        $pattern = $this->getOption('contentblocks.sanitize_pattern', null, '/([[:alnum:]_\.-]*)/');
+        $replace = $this->getOption('alpacka.sanitize_replace', null, '_');
+        $pattern = $this->getOption('alpacka.sanitize_pattern', null, '/([[:alnum:]_\.-]*)/');
         $name = str_replace(str_split(preg_replace($pattern, $replace, $name)), $replace, $name);
         $name = preg_replace('/[\/_|+ -]+/', $replace, $name);
         $name = trim(trim($name, $replace));
@@ -193,6 +204,44 @@ class Alpacka
     {
         $this->resource = $resource;
         $this->setWorkingContext($resource->get('context_key'));
+
+        // Make sure the resource is also added to $modx->resource if there's nothing set there
+        // This provides compatibility for dynamic media source paths using snippets relying on $modx->resource
+        if (!$this->modx->resource) {
+            $this->modx->resource =& $resource;
+        }
+
+        if ($this->getBooleanOption('alpacka.parse_parent_path', null,
+                true) && $parent = $resource->getOne('Parent')
+        ) {
+            $this->setPathVariables(array(
+                'parent_alias' => $parent->get('alias'),
+            ));
+            $pids = $this->modx->getParentIds($resource->get('id'),
+                (int)$this->getOption('alpacka.parse_parent_path_height', null, 10),
+                array('context' => $resource->get('context_key')));
+            $pidx = count($pids) - 2;
+            if ($pidx >= 0 && $ultimateParent = $this->modx->getObject('modResource', $pids[$pidx])) {
+                $this->setPathVariables(array(
+                    'ultimate_parent' => $ultimateParent->get('id'),
+                    'ultimate_parent_alias' => $ultimateParent->get('alias'),
+                    'ultimate_alias' => $ultimateParent->get('alias'),
+                ));
+            } else {
+                $this->setPathVariables(array(
+                    'ultimate_parent' => '',
+                    'ultimate_parent_alias' => '',
+                    'ultimate_alias' => ''
+                ));
+            }
+        } else {
+            $this->setPathVariables(array(
+                'parent_alias' => '',
+                'ultimate_parent' => '',
+                'ultimate_parent_alias' => '',
+                'ultimate_alias' => ''
+            ));
+        }
     }
 
 
@@ -259,7 +308,7 @@ class Alpacka
                     } elseif (array_key_exists($key, $this->resource->_fieldMeta)) {
                         $path = str_replace($ph, $this->resource->get($key), $path);
                     } else {
-                        $this->modx->log(\modX::LOG_LEVEL_WARN, "Unknown placeholder '{$key}' in redactor path {$path}",
+                        $this->modx->log(\modX::LOG_LEVEL_WARN, "Unknown placeholder '{$key}' in path {$path}",
                             '', __METHOD__, __FILE__, __LINE__);
                     }
                 }
@@ -268,6 +317,15 @@ class Alpacka
         $path = str_replace('//', '/', $path);
 
         return $path;
+    }
+
+    /**
+     * Sets path variables which are processed in the upload/browse paths.
+     * @param array $array
+     */
+    public function setPathVariables(array $array = array())
+    {
+        $this->pathVariables = array_merge($this->pathVariables, $array);
     }
 
 }
