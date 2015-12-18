@@ -7,6 +7,8 @@ use Pimple\Container;
 class Alpacka
 {
     protected $namespace = 'alpacka';
+    protected $loadPackage = true;
+    protected $loadLexicon = true;
 
     /** @var \modContext */
     public $wctx;
@@ -37,6 +39,14 @@ class Alpacka
         $this->services = new Container();
         $this->registerServices();
         $this->config = array_merge($this->loadSettingsFromNamespace(), $config);
+
+        // Automatically load the
+        if ($this->loadPackage && ($this->namespace !== 'alpacka')) {
+            $this->modx->addPackage($this->namespace, $this->config['model_path']);
+        }
+        if ($this->loadLexicon && ($this->namespace !== 'alpacka')) {
+            $this->modx->lexicon->load($this->namespace . ':default');
+        }
     }
 
     /**
@@ -349,6 +359,7 @@ class Alpacka
         $config['core_path'] = $corePath;
         $config['templates_path'] = $corePath . 'templates/';
         $config['controllers_path'] = $corePath . 'controllers/';
+        $config['model_path'] = $corePath . 'controllers/';
         $config['processors_path'] = $corePath . 'processors/';
         $config['elements_path'] = $corePath . 'elements/';
 

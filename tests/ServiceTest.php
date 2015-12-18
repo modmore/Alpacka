@@ -20,6 +20,7 @@ class ServiceTest extends PHPUnit_Framework_TestCase {
         $this->assertNotEmpty($this->service->config['core_path'], 'missing core_path config entry.');
         $this->assertNotEmpty($this->service->config['templates_path'], 'missing templates_path config entry.');
         $this->assertNotEmpty($this->service->config['controllers_path'], 'missing templates_path config entry.');
+        $this->assertNotEmpty($this->service->config['model_path'], 'missing templates_path config entry.');
         $this->assertNotEmpty($this->service->config['processors_path'], 'missing templates_path config entry.');
         $this->assertNotEmpty($this->service->config['elements_path'], 'missing templates_path config entry.');
         $this->assertNotEmpty($this->service->config['assets_url'], 'missing assets_url config entry.');
