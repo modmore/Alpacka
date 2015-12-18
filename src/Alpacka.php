@@ -9,32 +9,105 @@ use Pimple\Container;
 
 class Alpacka
 {
+    /**
+     * The namespace for this service class. This is used for a bunch of stuff, including loading system settings
+     * that belong to the namespace, setting the paths in the config array and loading the xPDO package and lexicon.
+     *
+     * @var string
+     */
     protected $namespace = 'alpacka';
+    /**
+     * Set to trueto automatically load the xPDO package with the name of $this->namespace.
+     *
+     * @var bool
+     */
     protected $loadPackage = true;
+    /**
+     * Set to true to automatically load the `default` lexicon topic in the $this->namespace namespace.
+     *
+     * @var bool
+     */
     protected $loadLexicon = true;
 
-    /** @var \modContext */
+    /**
+     * The working context for this request. This is set by calling $this->setResource or $this->setWorkingContext
+     * and needs to be an initialised context. Used for getting context-specific settings for example.
+     *
+     * @var \modContext
+     */
     public $wctx;
 
-    /** @var \modResource */
+    /**
+     * The resource for this request. Make sure to call $this->setResource somewhere you have access to the resource
+     * (in a plugin, or snippet) to fill this properly. The resource object is used in path placeholders among other
+     * things.
+     *
+     * @var \modResource
+     */
     public $resource;
 
-    /** @var Version */
+    /**
+     * The current version. This will contain a Version object after calling $this->setVersion in the constructor.
+     *
+     * @var Version
+     */
     public $version;
 
-    /** @var \modX */
+    /**
+     * An instance of the modX class.
+     *
+     * @todo Before 1.0, change this to an Adapter as per Commerce
+     *
+     * @var \modX
+     */
     public $modx;
 
-    /** @var Container */
+    /**
+     * A dependency injection container (Pimple). In $this->registerServices a set of standard dependencies are
+     * registered, but you can add your own as well.
+     *
+     * @var Container
+     */
     public $services;
 
+    /**
+     * An array of Chunk objects, used to cache chunk information for $this->getChunk().
+     *
+     * @var array
+     */
     public $chunks = array();
-    public $config = array();
-    public $pathVariables = array();
 
     /**
-     * The main contructor for Alpacka. This doesn't hardcode the instance to the modX class as that might change in
+     * An array of configuration options. This contains snake_case settings like core_path, templates_path,
+     * controllers_path, model_path, processors_path, elements_path, assets_url, connector_url and other system
+     * settings that follow the "namespace.setting_key" format
+     *
+     * @var array
+     */
+    public $config = array();
+
+    /**
+     * An array of additional pathVariables (key => value) that $this->parsePathVariables will replace.
+     *
+     * @var array
+     */
+    protected $pathVariables = array();
+
+    /**
+     * The main constructor for Alpacka. This doesn't hardcode the instance to the modX class as that might change in
      * the future, and we don't want to manually update all derivative service classes when that happens.
+     *
+     * Your derivative constructor should look something like this:
+     *
+     * ```` php
+     * public function __construct($instance, array $config = array())
+     * {
+     *      parent::__construct($instance, $config);
+     *      $this->setVersion(1, 3, 0, 'dev1');
+     * }
+     * ````
+     *
+     * Of course you can add additional logic in there as you please.
      *
      * @param \modX $instance
      * @param array $config
@@ -46,7 +119,7 @@ class Alpacka
         $this->registerServices();
         $this->config = array_merge($this->loadSettingsFromNamespace(), $config);
 
-        // Automatically load the
+        // Automatically load the xPDO package if specified, as well as the default lexicon topic.
         if ($this->loadPackage && ($this->namespace !== 'alpacka')) {
             $this->modx->addPackage($this->namespace, $this->config['model_path']);
         }
@@ -69,31 +142,32 @@ class Alpacka
         $this->version = new Version($major, $minor, $patch, $release);
     }
 
+    /**
+     * Register standard services into the $this->services dependency injection container.
+     */
     public function registerServices()
     {
         // @todo
     }
 
-
     /**
-     * Gets a Chunk and caches it; defaults to file based chunks.
+     * Gets a Chunk and caches it; also falls back to file-based templates
+     * for easier development.
      *
+     * @author Shaun McCormick
      * @access public
      * @param string $name The name of the Chunk
      * @param array $properties The properties for the Chunk
      * @return string The processed content of the Chunk
-     * @author Shaun "splittingred" McCormick
      */
     public function getChunk($name, $properties = array())
     {
         $chunk = null;
         if (!isset($this->chunks[$name])) {
-            $chunk = $this->_getTplChunk($name);
-            if (empty($chunk)) {
-                $chunk = $this->modx->getObject('modChunk', array('name' => $name), true);
-                if ($chunk == false) {
-                    return false;
-                }
+            $chunk = $this->modx->getObject('modChunk', array('name' => $name));
+            if (empty($chunk) || !is_object($chunk)) {
+                $chunk = $this->_getTplChunk($name);
+                if ($chunk == false) return false;
             }
             $this->chunks[$name] = $chunk->getContent();
         } else {
@@ -102,7 +176,6 @@ class Alpacka
             $chunk->setContent($o);
         }
         $chunk->setCacheable(false);
-
         return $chunk->process($properties);
     }
 
@@ -131,7 +204,7 @@ class Alpacka
     }
 
     /**
-     * Grabs the setting by its key, looking at the current working context (see setWorkingContext) first.
+     * Grabs a setting value by its key, looking at the current working context (see setWorkingContext) first.
      *
      * @param $key
      * @param null $options
@@ -180,10 +253,12 @@ class Alpacka
 
 
     /**
-     * @param $name
+     * Sanitises and transliterates a value for use as paths.
+     *
+     * @param $value
      * @return string
      */
-    public function sanitize($name)
+    public function sanitize($value)
     {
         $iconv = function_exists('iconv');
         $charset = strtoupper((string)$this->getOption('modx_charset', null, 'UTF-8'));
@@ -203,7 +278,7 @@ class Alpacka
             case 'iconv':
                 // if iconv is available, use the built-in transliteration it provides
                 if ($iconv) {
-                    $name = iconv($charset, 'ASCII//TRANSLIT//IGNORE', $name);
+                    $value = iconv($charset, 'ASCII//TRANSLIT//IGNORE', $value);
                 }
                 break;
 
@@ -211,7 +286,7 @@ class Alpacka
                 // otherwise look for a transliteration service class (i.e. Translit package) that will accept named transliteration tables
                 if ($this->modx instanceof \modX) {
                     if ($translit = $this->modx->getService('translit', $translitClass, $translitClassPath)) {
-                        $name = $translit->translate($name, $translit);
+                        $value = $translit->translate($value, $translit);
                     }
                 }
                 break;
@@ -219,11 +294,11 @@ class Alpacka
 
         $replace = $this->getOption($this->namespace . '.sanitize_replace', null, '_');
         $pattern = $this->getOption($this->namespace . '.sanitize_pattern', null, '/([[:alnum:]_\.-]*)/');
-        $name = str_replace(str_split(preg_replace($pattern, $replace, $name)), $replace, $name);
-        $name = preg_replace('/[\/_|+ -]+/', $replace, $name);
-        $name = trim(trim($name, $replace));
+        $value = str_replace(str_split(preg_replace($pattern, $replace, $value)), $replace, $value);
+        $value = preg_replace('/[\/_|+ -]+/', $replace, $value);
+        $value = trim(trim($value, $replace));
 
-        return $name;
+        return $value;
     }
 
 
