@@ -6,6 +6,8 @@ use Pimple\Container;
 
 class Alpacka
 {
+    protected $namespace = 'alpacka';
+
     public $services;
     public $modx;
     public $chunks = [];
@@ -27,14 +29,23 @@ class Alpacka
     public function __construct($instance, array $config = array())
     {
         $this->modx = $instance;
-        $this->setVersion();
         $this->services = new Container();
         $this->registerServices();
+        $this->config = array_merge($this->loadSettingsFromNamespace(), $config);
     }
 
-    public function setVersion()
+    /**
+     * Sets the internal version object. This can be used for cache busting assets and stuff like that. Call this once
+     * in the service class constructor.
+     *
+     * @param int $major
+     * @param int $minor
+     * @param int $patch
+     * @param string $release
+     */
+    public function setVersion($major, $minor = 0, $patch = 0, $release = 'pl')
     {
-        $this->version = new Version(1, 0, 0, 'pl');
+        $this->version = new Version($major, $minor, $patch, $release);
     }
 
     public function registerServices()
@@ -326,6 +337,44 @@ class Alpacka
     public function setPathVariables(array $array = array())
     {
         $this->pathVariables = array_merge($this->pathVariables, $array);
+    }
+
+    /**
+     * Loads all system settings that start with the configured namespace.
+     *
+     * @return array
+     */
+    public function loadSettingsFromNamespace()
+    {
+        $ns = $this->namespace;
+        $config = array();
+
+        $corePath = $this->modx->getOption($ns . '.core_path', null, MODX_CORE_PATH . 'components/' . $ns . '/');
+        $config['core_path'] = $corePath;
+        $config['templates_path'] = $corePath . 'templates/';
+        $config['controllers_path'] = $corePath . 'controllers/';
+        $config['processors_path'] = $corePath . 'processors/';
+        $config['elements_path'] = $corePath . 'elements/';
+
+        $assetsUrl = $this->modx->getOption($ns . '.assets_url', null, MODX_ASSETS_URL . 'components/' . $ns . '/');
+        $config['assets_url'] = $assetsUrl;
+        $config['connectors_url'] = $assetsUrl . ' connector.php';
+
+        $c = $this->modx->newQuery('modSystemSetting');
+        $c->where(array(
+            'key:LIKE' => $ns . '.%'
+        ));
+        $c->limit(0);
+
+        /** @var \modSystemSetting[] $iterator */
+        $iterator = $this->modx->getIterator('modSystemSetting', $c);
+        foreach ($iterator as $setting) {
+            $key = $setting->get('key');
+            $key = substr($key, strlen($ns) + 1);
+            $config[$key] = $setting->get('value');
+        }
+
+        return $config;
     }
 
 }
