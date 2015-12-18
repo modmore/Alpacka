@@ -3,6 +3,7 @@
  * Tests the Redactor class.
  */
 class ServiceTest extends PHPUnit_Framework_TestCase {
+    /** @var  \modmore\Alpacka\Alpacka */
     public $service;
 
     public function setUp() {
@@ -30,25 +31,44 @@ class ServiceTest extends PHPUnit_Framework_TestCase {
      *
      * @param $string
      * @param $expected
-     * /
-    public function testExplodeAndTrim ($string, $expected) {
-        $this->assertEquals($expected, $this->service->explode($string));
+     * @param $separator
+     */
+    public function testExplodeAndTrim ($string, $expected, $separator) {
+        $this->assertEquals($expected, $this->service->explode($string, $separator));
     }
 
     public function providerExplodeAndTrim () {
         return array(
             array(
                 'foo,bar,baz',
-                array('foo', 'bar', 'baz')
+                array('foo', 'bar', 'baz'),
+                ','
             ),
             array(
                 'foo , bar , baz',
-                array('foo', 'bar', 'baz')
+                array('foo', 'bar', 'baz'),
+                ','
             ),
             array(
                 'foo      ,      bar ,    baz',
-                array('foo', 'bar', 'baz')
-            )
+                array('foo', 'bar', 'baz'),
+                ','
+            ),
+            array(
+                'foo;bar;baz',
+                array('foo', 'bar', 'baz'),
+                ';'
+            ),
+            array(
+                'foo ; bar ; baz',
+                array('foo', 'bar', 'baz'),
+                ';'
+            ),
+            array(
+                'foo      ;      bar ;    baz',
+                array('foo', 'bar', 'baz'),
+                ';'
+            ),
         );
     }
 
@@ -57,10 +77,10 @@ class ServiceTest extends PHPUnit_Framework_TestCase {
      *
      * @param $value
      * @param $expected
-     * /
+     */
     public function testGetBooleanOption($expected, $value)
     {
-        $this->assertEquals($expected, $this->service->_castValueToBool($value));
+        $this->assertEquals($expected, $this->service->castValueToBool($value));
     }
 
     public function providerGetBooleanOption()
@@ -78,5 +98,5 @@ class ServiceTest extends PHPUnit_Framework_TestCase {
             array(false, 'false'),
             array(false, 'no'),
         );
-    }*/
+    }
 }

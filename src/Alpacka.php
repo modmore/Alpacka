@@ -189,8 +189,8 @@ class Alpacka
             default:
                 // otherwise look for a transliteration service class (i.e. Translit package) that will accept named transliteration tables
                 if ($this->modx instanceof \modX) {
-                    if ($this->modx->getService('translit', $translitClass, $translitClassPath)) {
-                        $name = $this->modx->translit->translate($name, $translit);
+                    if ($translit = $this->modx->getService('translit', $translitClass, $translitClassPath)) {
+                        $name = $translit->translate($name, $translit);
                     }
                 }
                 break;
@@ -358,7 +358,7 @@ class Alpacka
 
         $assetsUrl = $this->modx->getOption($ns . '.assets_url', null, MODX_ASSETS_URL . 'components/' . $ns . '/');
         $config['assets_url'] = $assetsUrl;
-        $config['connectors_url'] = $assetsUrl . ' connector.php';
+        $config['connector_url'] = $assetsUrl . ' connector.php';
 
         $c = $this->modx->newQuery('modSystemSetting');
         $c->where(array(
@@ -375,6 +375,50 @@ class Alpacka
         }
 
         return $config;
+    }
+
+    /**
+     * Utility method to explodes a string into an array based on the $separator, trimming each item in the array
+     * as well.
+     *
+     * @param string $string The string to split up.
+     * @param string $separator The separator between items. Defaults to a comma.
+     *
+     * @return array
+     */
+    public function explode($string, $separator = ',') {
+        if ($string === false) return $string;
+        $array = explode($separator, $string);
+        return array_map('trim', $array);
+    }
+
+    /**
+     * Gets a context-aware setting through $this->getOption, and casts the value to a true boolean automatically,
+     * including strings "false" and "no" which are sometimes set that way by ExtJS.
+     *
+     * @param string $name
+     * @param array $options
+     * @param bool $default
+     * @return bool
+     */
+    public function getBooleanOption($name, array $options = null, $default = null) {
+        $option = $this->getOption($name, $options, $default);
+        return $this->castValueToBool($option);
+    }
+
+    /**
+     * Turns a value into a boolean. This checks for "false" and "no" strings, as well as anything PHP can automatically
+     * cast to a boolean value.
+     *
+     * @param $value
+     * @return bool
+     */
+    public function castValueToBool($value)
+    {
+        if (in_array(strtolower($value), array('false', 'no'))) {
+            return false;
+        }
+        return (bool)$value;
     }
 
 }
