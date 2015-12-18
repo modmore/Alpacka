@@ -370,7 +370,7 @@ class Alpacka
         $config['core_path'] = $corePath;
         $config['templates_path'] = $corePath . 'templates/';
         $config['controllers_path'] = $corePath . 'controllers/';
-        $config['model_path'] = $corePath . 'controllers/';
+        $config['model_path'] = $corePath . 'model/';
         $config['processors_path'] = $corePath . 'processors/';
         $config['elements_path'] = $corePath . 'elements/';
 
