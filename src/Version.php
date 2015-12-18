@@ -6,7 +6,9 @@ namespace modmore\Alpacka;
  * Abstraction of a version number to provide access to parts of the version
  * or the full version in specific formats.
  *
- * Class VersionObject
+ * @todo Make the individual properties protected and add getters (and maybe a magic __get method)
+ *
+ * Class Version
  */
 class Version
 {
