@@ -181,11 +181,11 @@ class Alpacka
     {
         $iconv = function_exists('iconv');
         $charset = strtoupper((string)$this->getOption('modx_charset', null, 'UTF-8'));
-        $translit = $this->getOption('alpacka.translit', null,
+        $translit = $this->getOption($this->namespace . '.translit', null,
             $this->getOption('friendly_alias_translit', null, 'none'), true);
-        $translitClass = $this->getOption('alpacka.translit_class', null,
+        $translitClass = $this->getOption($this->namespace . '.translit_class', null,
             $this->getOption('friendly_alias_translit_class', null, 'translit.modTransliterate'), true);
-        $translitClassPath = $this->getOption('alpacka.translit_class_path', null,
+        $translitClassPath = $this->getOption($this->namespace . '.translit_class_path', null,
             $this->getOption('friendly_alias_translit_class_path', null,
                 $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/'), true);
         switch ($translit) {
@@ -211,8 +211,8 @@ class Alpacka
                 break;
         }
 
-        $replace = $this->getOption('alpacka.sanitize_replace', null, '_');
-        $pattern = $this->getOption('alpacka.sanitize_pattern', null, '/([[:alnum:]_\.-]*)/');
+        $replace = $this->getOption($this->namespace . '.sanitize_replace', null, '_');
+        $pattern = $this->getOption($this->namespace . '.sanitize_pattern', null, '/([[:alnum:]_\.-]*)/');
         $name = str_replace(str_split(preg_replace($pattern, $replace, $name)), $replace, $name);
         $name = preg_replace('/[\/_|+ -]+/', $replace, $name);
         $name = trim(trim($name, $replace));
@@ -237,14 +237,14 @@ class Alpacka
             $this->modx->resource =& $resource;
         }
 
-        if ($this->getBooleanOption('alpacka.parse_parent_path', null,
+        if ($this->getBooleanOption($this->namespace . '.parse_parent_path', null,
                 true) && $parent = $resource->getOne('Parent')
         ) {
             $this->setPathVariables(array(
                 'parent_alias' => $parent->get('alias'),
             ));
             $pids = $this->modx->getParentIds($resource->get('id'),
-                (int)$this->getOption('alpacka.parse_parent_path_height', null, 10),
+                (int)$this->getOption($this->namespace . '.parse_parent_path_height', null, 10),
                 array('context' => $resource->get('context_key')));
             $pidx = count($pids) - 2;
             if ($pidx >= 0 && $ultimateParent = $this->modx->getObject('modResource', $pids[$pidx])) {
@@ -329,6 +329,10 @@ class Alpacka
             }
         }
 
+        /**
+         * Prevent changing double slashes in a protocol (e.g. http://) to a single slash, while cleaning up other
+         * duplicate slashes in the path.
+         */
         $path = str_replace('://', '__:_/_/__', $path);
         $path = str_replace('//', '/', $path);
         $path = str_replace('__:_/_/__', '://', $path);
@@ -338,6 +342,7 @@ class Alpacka
 
     /**
      * Sets path variables which are processed in the upload/browse paths.
+     *
      * @param array $array
      */
     public function setPathVariables(array $array = array())
@@ -428,4 +433,15 @@ class Alpacka
         return (bool)$value;
     }
 
+    /**
+     * @param int $resource
+     * @param string $context
+     * @return mixed
+     */
+    public function getUltimateParent($resource = 0, $context = '')
+    {
+        $parents = $this->modx->getParentIds($resource, 10, array('context' => $context));
+        $parents = array_reverse($parents);
+        return isset($parents[1]) ? $parents[1] : 0;
+    }
 }
