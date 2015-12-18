@@ -1,19 +1,22 @@
 {
-    "name": "modmore/alpacka",
-    "description": "Generic service class and collection of utilities for modmore products",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "modmore",
-            "email": "support@modmore.com"
-        }
-    ],
-    "require": {
-        "pimple/pimple": "~3.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "modmore\\Alpacka\\": "src/"
-        }
+  "name": "modmore/alpacka",
+  "description": "Generic MODX service class and collection of utilities, used by the modmore team, but also available for third party developers.",
+  "license": "MIT",
+  "keywords": ["modx", "modmore", "alpacka", "service"],
+  "homepage": "https://github.com/modmore/Alpacka",
+  "authors": [
+    {
+      "name": "the modmore team",
+      "email": "support@modmore.com"
     }
+  ],
+  "require": {
+    "php": ">5.3.3",
+    "pimple/pimple": "~3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "modmore\\Alpacka\\": "src/"
+    }
+  }
 }
