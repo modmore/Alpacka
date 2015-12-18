@@ -2,6 +2,9 @@
 
 namespace modmore\Alpacka;
 
+// Load functions that may be missing in certain environments
+require_once dirname(__FILE__) . '/functions.php';
+
 use Pimple\Container;
 
 class Alpacka
