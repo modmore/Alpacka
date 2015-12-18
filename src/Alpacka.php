@@ -8,16 +8,21 @@ class Alpacka
 {
     protected $namespace = 'alpacka';
 
-    public $services;
-    public $modx;
-    public $chunks = [];
-    public $config = [];
     /** @var \modContext */
     public $wctx;
+
     /** @var \modResource */
     public $resource;
+
+    /** @var Version */
     public $version;
-    public $pathVariables;
+
+
+    public $services;
+    public $modx;
+    public $chunks = array();
+    public $config = array();
+    public $pathVariables = array();
 
     /**
      * The main contructor for Alpacka. This doesn't hardcode the instance to the modX class as that might change in
