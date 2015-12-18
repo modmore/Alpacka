@@ -22,9 +22,12 @@ class Alpacka
     /** @var Version */
     public $version;
 
-
-    public $services;
+    /** @var \modX */
     public $modx;
+
+    /** @var Container */
+    public $services;
+
     public $chunks = array();
     public $config = array();
     public $pathVariables = array();
