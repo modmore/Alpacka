@@ -286,46 +286,37 @@ class Alpacka
         $path = str_replace('[[+day]]', date('d'), $path);
         $path = str_replace('[[+user]]', $this->modx->getUser()->get('id'), $path);
         $path = str_replace('[[+username]]', $this->modx->getUser()->get('username'), $path);
-        $path = str_replace('[[+resource]]', ($this->resource) ? $this->resource->get('id') : 0, $path);
         $path = str_replace('[[++assets_url]]', $this->getOption('assets_url', null, 'assets/'), $path);
         $path = str_replace('[[++site_url]]', $this->getOption('site_url', null, ''), $path);
         $path = str_replace('[[++base_url]]', $this->getOption('base_url', null, ''), $path);
 
+        foreach ($this->pathVariables as $key => $value) {
+            $path = str_replace('[[+'.$key.']]', $value, $path);
+        }
+
         if ($this->resource) {
-            $parent = $this->resource->getOne('Parent');
-            if ($parent instanceof \modResource) {
-                $path = str_replace('[[+parent_alias]]', $parent->get('alias'), $path);
-
-                // Grab the ultimate parent as well, to set some of those placeholders too
-                $pids = $this->modx->getParentIds($this->resource->get('id'),
-                    array('context' => $this->resource->get('context_key')));
-                $ultimateParent = $this->modx->getObject('modResource', $pids[count($pids) - 2]);
-                if ($ultimateParent instanceof \modResource) {
-                    $path = str_replace('[[+ultimate_parent]]', $ultimateParent->get('id'), $path);
-                    $path = str_replace('[[+ultimate_alias]]', $ultimateParent->get('alias'), $path);
-                    $path = str_replace('[[+ultimate_parent_alias]]', $ultimateParent->get('alias'), $path);
-                }
-            }
-
             // Match all placeholders in the string so we can replace it with the proper values.
             if (preg_match_all('/\[\[\+(.*?)\]\]/', $path, $matches) && !empty($matches[1])) {
-                //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Matches in '.$path.': ' . print_r($matches, true));
                 foreach ($matches[1] as $key) {
-                    $ph = '[[+' . $key . ']]';
+                    $ph = '[[+'.$key.']]';
                     if (substr($key, 0, 3) == 'tv.') {
                         $tvName = substr($key, 3);
                         $tvValue = $this->resource->getTVValue($tvName);
                         $path = str_replace($ph, $tvValue, $path);
-                    } elseif (array_key_exists($key, $this->resource->_fieldMeta)) {
+                    }
+                    elseif (array_key_exists($key, $this->resource->_fieldMeta)) {
                         $path = str_replace($ph, $this->resource->get($key), $path);
-                    } else {
-                        $this->modx->log(\modX::LOG_LEVEL_WARN, "Unknown placeholder '{$key}' in path {$path}",
-                            '', __METHOD__, __FILE__, __LINE__);
+                    }
+                    else {
+                        $this->modx->log(\modX::LOG_LEVEL_WARN, "Unknown placeholder '{$key}' in redactor path {$path}", '', __METHOD__, __FILE__, __LINE__);
                     }
                 }
             }
         }
+
+        $path = str_replace('://', '__:_/_/__', $path);
         $path = str_replace('//', '/', $path);
+        $path = str_replace('__:_/_/__', '://', $path);
 
         return $path;
     }
