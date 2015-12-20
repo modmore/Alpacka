@@ -8,12 +8,22 @@ example service implementation in tests/Example.php.
 
 The service class includes a Pimple dependency injection container as $class->services. 
 
-Documentation to follow :-)
+[Documentation (work in progress) can be found in the wiki.](https://github.com/modmore/Alpacka/wiki)
 
 ## Installation
 
 `composer require modmore/alpacka`
 
-## Dev installation
+## Contributions are more than welcome
+
+To contribute to Alpacka you will first need to install the local dependencies:
 
 `composer install`
+
+Please follow the existing coding style. In particular:
+
+- Array properties and MODX settings are in snake_case
+- Variable, property and method names are in camelCase
+- Inline documentation please! At the very least PHPDoc on every method and public properties. 
+
+One pull request per feature/improvement/bugfix. 
