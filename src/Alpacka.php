@@ -451,7 +451,7 @@ class Alpacka
 
         $assetsUrl = $this->modx->getOption($ns . '.assets_url', null, MODX_ASSETS_URL . 'components/' . $ns . '/');
         $config['assets_url'] = $assetsUrl;
-        $config['connector_url'] = $assetsUrl . ' connector.php';
+        $config['connector_url'] = $assetsUrl . 'connector.php';
 
         $c = $this->modx->newQuery('modSystemSetting');
         $c->where(array(
@@ -504,7 +504,7 @@ class Alpacka
      * cast to a boolean value.
      *
      * @param $value
-     * @return bool
+     * @return boolco
      */
     public function castValueToBool($value)
     {
