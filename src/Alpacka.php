@@ -504,7 +504,7 @@ class Alpacka
      * cast to a boolean value.
      *
      * @param $value
-     * @return boolco
+     * @return bool
      */
     public function castValueToBool($value)
     {
