@@ -191,7 +191,7 @@ class Alpacka
     private function _getTplChunk($name, $postFix = '.tpl')
     {
         $chunk = false;
-        $f = $this->config['templatesPath'] . strtolower($name) . $postFix;
+        $f = $this->config['templates_path'] . strtolower($name) . $postFix;
         if (file_exists($f)) {
             $o = file_get_contents($f);
             /* @var \modChunk $chunk */
