@@ -391,6 +391,7 @@ class Alpacka
         }
 
         if ($this->resource) {
+            $path = str_replace('[[+resource]]', $this->resource->get('id'), $path);
             // Match all placeholders in the string so we can replace it with the proper values.
             if (preg_match_all('/\[\[\+(.*?)\]\]/', $path, $matches) && !empty($matches[1])) {
                 foreach ($matches[1] as $key) {
