@@ -91,7 +91,7 @@ class Alpacka
      *
      * @var array
      */
-    protected $pathVariables = array();
+    public $pathVariables = array();
 
     /**
      * The main constructor for Alpacka. This doesn't hardcode the instance to the modX class as that might change in

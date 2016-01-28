@@ -5,7 +5,7 @@ information about each fixed issue.
 
 ## v0.2.0, 2016-01-28
 - Make sure context specific settings are loaded into $service->config when setting the working context
-- 
+- Make $service->pathVariables public
 
 ## v0.1.2, 2016-01-20
 - Fix/add [[+resource]] path placeholder 
