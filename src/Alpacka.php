@@ -248,6 +248,8 @@ class Alpacka
             return false;
         }
 
+        $this->loadContextSettingsFromNamespace($key);
+
         return $this->wctx;
     }
 
@@ -468,6 +470,35 @@ class Alpacka
             $config[$key] = $setting->get('value');
         }
 
+        return $config;
+    }
+
+    /**
+     * Grabs context specific settings from the current namespace, and loads them into $this->config.
+     * Also returns the newly overridden values in an array.
+     *
+     * @param $contextKey
+     * @return array
+     */
+    public function loadContextSettingsFromNamespace($contextKey)
+    {
+        $config = array();
+
+        $c = $this->modx->newQuery('modContextSetting');
+        $c->where(array(
+            'context_key' => $contextKey,
+            'key:LIKE' => $this->namespace . '.%'
+        ));
+        $c->limit(0);
+
+        /** @var \modSystemSetting[] $iterator */
+        $iterator = $this->modx->getIterator('modContextSetting', $c);
+        foreach ($iterator as $setting) {
+            $key = $setting->get('key');
+            $key = substr($key, strlen($this->namespace) + 1);
+            $config[$key] = $setting->get('value');
+        }
+        $this->config = array_merge($this->config, $config);
         return $config;
     }
 
