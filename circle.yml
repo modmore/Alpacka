@@ -1,0 +1,29 @@
+# default php version
+machine:
+  php:
+    version: 5.4.4
+# set up MODX
+checkout:
+  post:
+    # install MODX from git
+    - git clone https://github.com/modxcms/revolution.git modx/
+    - cd modx && git checkout v2.4.2-pl
+    - cp modx/_build/build.config.sample.php modx/_build/build.config.php
+    - cp modx/_build/build.distrib.config.sample.php modx/_build/build.distrib.config.php
+    - cp modx/_build/build.properties.sample.php modx/_build/build.properties.php
+    - php modx/_build/transport.core.php
+    # use the included modx.config.xml for the settings
+    - cp circleci.modx.config.xml modx/setup/config.xml
+    - cd modx/setup/ && php ./index.php --installmode=new
+    - cp modx/config.core.php config.core.php
+# After running the tests, we run it again on different versions of PHP
+test:
+  override:
+    - phpunit --log-junit $CIRCLE_TEST_REPORTS/junit/$(phpenv local).xml
+  post:
+    - phpenv local 5.4.37 && php -v
+    - phpunit --log-junit $CIRCLE_TEST_REPORTS/junit/$(phpenv local).xml
+    - phpenv local 5.5.21 && php -v
+    - phpunit --log-junit $CIRCLE_TEST_REPORTS/junit/$(phpenv local).xml
+    - phpenv local 5.6.5 && php -v
+    - phpunit --log-junit $CIRCLE_TEST_REPORTS/junit/$(phpenv local).xml
