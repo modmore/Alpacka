@@ -316,8 +316,9 @@ class Alpacka
 
         // Make sure the resource is also added to $modx->resource if there's nothing set there
         // This provides compatibility for dynamic media source paths using snippets relying on $modx->resource
-        if (!$this->modx->resource) {
+        if (!$this->modx->resource || !$this->modx->resource->get('id') !== $resource->get('id')) {
             $this->modx->resource =& $resource;
+            $this->modx->resourceIdentifier = $resource->get('id');
         }
 
         if ($this->getBooleanOption($this->namespace . '.parse_parent_path', null,
