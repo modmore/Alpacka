@@ -3,6 +3,9 @@
 This document contains a changelog of what's new and fixed in Alpacka. Check the tags and commits for more specific
 information about each fixed issue. 
 
+## v0.2.1, 2016-02-13
+- Fix issue parsing template variables due to missing resourceIdentifier
+
 ## v0.2.0, 2016-01-28
 - Make sure context specific settings are loaded into $service->config when setting the working context
 - Make $service->pathVariables public
