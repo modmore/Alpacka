@@ -3,6 +3,9 @@
 This document contains a changelog of what's new and fixed in Alpacka. Check the tags and commits for more specific
 information about each fixed issue. 
 
+## v0.2.2, 2016-03-23
+- Fix issue with incorrectly setting the current resource to $this->modx->resource
+
 ## v0.2.1, 2016-02-13
 - Fix issue parsing template variables due to missing resourceIdentifier
 
