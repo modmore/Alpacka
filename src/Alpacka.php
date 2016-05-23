@@ -436,6 +436,27 @@ class Alpacka
     }
 
     /**
+     * Runs a snippet identified by its class name, passing along the provided properties.
+     *
+     * @param string $class
+     * @param array $properties
+     * @return string
+     */
+    public function runSnippet($class, array $properties = array(), $strict = false)
+    {
+        if (!class_exists($class) && file_exists($this->config['elements_path'] . 'snippets/' . $class . '.php')) {
+            include_once $this->config['elements_path'] . 'snippets/' . $class . '.php';
+        }
+
+        if (class_exists($class)) {
+            /** @var Snippet $snippet */
+            $snippet = new $class($this, $strict);
+            return $snippet->run($properties);
+        }
+        return 'Could not load ' . $class;
+    }
+
+    /**
      * Loads all system settings that start with the configured namespace.
      *
      * @return array
