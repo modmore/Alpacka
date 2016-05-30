@@ -11,8 +11,7 @@
     }
   ],
   "require": {
-    "php": ">5.3.3",
-    "pimple/pimple": "~3.0"
+    "php": ">5.3.3"
   },
   "autoload": {
     "psr-4": {

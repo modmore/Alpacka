@@ -5,8 +5,6 @@ namespace modmore\Alpacka;
 // Load functions that may be missing in certain environments
 require_once dirname(__FILE__) . '/functions.php';
 
-use Pimple\Container;
-
 class Alpacka
 {
     /**
@@ -63,14 +61,6 @@ class Alpacka
     public $modx;
 
     /**
-     * A dependency injection container (Pimple). In $this->registerServices a set of standard dependencies are
-     * registered, but you can add your own as well.
-     *
-     * @var Container
-     */
-    public $services;
-
-    /**
      * An array of Chunk objects, used to cache chunk information for $this->getChunk().
      *
      * @var array
@@ -115,8 +105,6 @@ class Alpacka
     public function __construct($instance, array $config = array())
     {
         $this->modx = $instance;
-        $this->services = new Container();
-        $this->registerServices();
         $this->config = array_merge($this->loadSettingsFromNamespace(), $config);
 
         // Automatically load the xPDO package if specified, as well as the default lexicon topic.
@@ -140,14 +128,6 @@ class Alpacka
     public function setVersion($major, $minor = 0, $patch = 0, $release = 'pl')
     {
         $this->version = new Version($major, $minor, $patch, $release);
-    }
-
-    /**
-     * Register standard services into the $this->services dependency injection container.
-     */
-    public function registerServices()
-    {
-        // @todo
     }
 
     /**
