@@ -287,8 +287,8 @@ class Alpacka
             default:
                 // otherwise look for a transliteration service class (i.e. Translit package) that will accept named transliteration tables
                 if ($this->modx instanceof \modX) {
-                    if ($translit = $this->modx->getService('translit', $translitClass, $translitClassPath)) {
-                        $value = $translit->translate($value, $translit);
+                    if ($transliterate = $this->modx->getService('translit', $translitClass, $translitClassPath)) {
+                        $value = $transliterate->translate($value, $translit);
                     }
                 }
                 break;
