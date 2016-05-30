@@ -1,0 +1,5 @@
+++ Alpaca 0.4.0
+++ Released on 2016-05-
++++++++++++++++++++++++++
+
+- Now available as a MODX Transport Package instead of a composer package.

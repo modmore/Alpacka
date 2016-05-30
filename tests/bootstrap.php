@@ -8,4 +8,4 @@ $modx->getService('error','error.modError', '', '');
 //$path = $modx->getOption('alpacka.core_path', null, $modx->getOption('core_path') . 'components/alpacka/');
 //$Alpacka = $modx->getService('alpacka', 'Alpacka', $path . 'model/alpacka/');
 
-require_once dirname(dirname(__FILE__)) . '/vendor/autoload.php';
+require_once dirname(dirname(__FILE__)) . '/core/components/alpacka/vendor/autoload.php';

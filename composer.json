@@ -4,6 +4,9 @@
   "license": "MIT",
   "keywords": ["modx", "modmore", "alpacka", "service"],
   "homepage": "https://github.com/modmore/Alpacka",
+  "config": {
+    "vendor-dir": "core/components/alpacka/vendor/"
+  },
   "authors": [
     {
       "name": "the modmore team",
@@ -15,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "modmore\\Alpacka\\": "src/"
+      "modmore\\Alpacka\\": "core/components/alpacka/src/"
     }
   }
 }
