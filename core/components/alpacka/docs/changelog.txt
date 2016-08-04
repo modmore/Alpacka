@@ -1,4 +1,9 @@
-++ Alpaca 0.4.0
-++ Released on 2016-05-
+++ Alpaca 0.4.0-rc2
+++ Released on 2016-08-04
++++++++++++++++++++++++++
+- Fix fatal errors on installs that have a renamed core folder
+
+++ Alpaca 0.4.0-rc1
+++ Released on 2016-08-01
 +++++++++++++++++++++++++
 - Now available as a MODX Extra (transport package) for shared installations.
