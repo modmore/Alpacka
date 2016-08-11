@@ -446,7 +446,7 @@ class Alpacka
         $ns = $this->namespace;
         $config = array();
 
-        $corePath = $this->modx->getOption($ns . '.core_path', null, MODX_CORE_PATH . 'components/' . $ns . '/');
+        $corePath = $this->modx->getOption($ns . '.core_path', null, $this->modx->getOption('core_path', null, MODX_CORE_PATH) . 'components/' . $ns . '/');
         $config['core_path'] = $corePath;
         $config['templates_path'] = $corePath . 'templates/';
         $config['controllers_path'] = $corePath . 'controllers/';
@@ -454,7 +454,7 @@ class Alpacka
         $config['processors_path'] = $corePath . 'processors/';
         $config['elements_path'] = $corePath . 'elements/';
 
-        $assetsUrl = $this->modx->getOption($ns . '.assets_url', null, MODX_ASSETS_URL . 'components/' . $ns . '/');
+        $assetsUrl = $this->modx->getOption($ns . '.assets_url', null, $this->modx->getOption('assets_url', null, MODX_ASSETS_URL) . 'components/' . $ns . '/');
         $config['assets_url'] = $assetsUrl;
         $config['connector_url'] = $assetsUrl . 'connector.php';
 
