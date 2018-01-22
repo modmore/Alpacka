@@ -394,6 +394,9 @@ class Alpacka
             }
         }
 
+        // Strip out any remaining placeholders
+        $path = preg_replace('/\[\[\+(.*?)\]\]/', '', $path);
+
         /**
          * Prevent changing double slashes in a protocol (e.g. http://) to a single slash, while cleaning up other
          * duplicate slashes in the path.

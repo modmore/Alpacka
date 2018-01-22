@@ -1,3 +1,4 @@
+- Make sure left-over placeholders are removed in parsePathPlaceholders
 - Read assets_url and core_path from settings before using config constants [S9752]
 
 ++ Alpaca 0.4.0-rc2

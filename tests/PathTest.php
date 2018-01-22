@@ -57,6 +57,14 @@ class PathTest extends PHPUnit_Framework_TestCase {
                 'assets/uploads/'
             ),
             array(
+                'assets/uploads/[[+foo]]',
+                'assets/uploads/'
+            ),
+            array(
+                'assets/[[+foo]]/uploads/',
+                'assets/uploads/'
+            ),
+            array(
                 "assets/[[+username]]/",
                 "assets/my_user_name/"
             ),
