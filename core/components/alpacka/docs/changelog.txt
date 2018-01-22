@@ -1,3 +1,6 @@
+++ Alpaca 1.0.0-pl
+++ Released on 2018-01-22
++++++++++++++++++++++++++
 - Make sure left-over placeholders are removed in parsePathPlaceholders
 - Read assets_url and core_path from settings before using config constants [S9752]
 

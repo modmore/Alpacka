@@ -3,9 +3,9 @@
 This document contains a changelog of what's new and fixed in Alpacka. Check the tags and commits for more specific
 information about each fixed issue. 
 
-## v0.4.0+
+## v0.4.0 and beyond
 - Alpacka is now available as a MODX transport package. Composer-support should be backwards compatible for package users, please report issues if you have an uncovered edge case.
-- Changes since 0.4.0 are available in core/components/alpacka/docs/changelog.txt
+- **Changes since 0.4.0 are available in core/components/alpacka/docs/changelog.txt**
 
 ## v0.3.1, 2016-05-30
 - Fix incorrect call to modTransliterate
