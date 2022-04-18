@@ -1,17 +1,18 @@
 # Changelog
 
 This document contains a changelog of what's new and fixed in Alpacka. Check the tags and commits for more specific
-information about each fixed issue. 
+information about each fixed issue.
+
+- **Changes since 0.4.0 are available in core/components/alpacka/docs/changelog.txt**
 
 ## v0.4.0 and beyond
 - Alpacka is now available as a MODX transport package. Composer-support should be backwards compatible for package users, please report issues if you have an uncovered edge case.
-- **Changes since 0.4.0 are available in core/components/alpacka/docs/changelog.txt**
 
 ## v0.3.1, 2016-05-30
 - Fix incorrect call to modTransliterate
 
 ## v0.3.0, 2016-05-23
-- Add abstract class for object oriented snippets with a bit more flexibility. 
+- Add abstract class for object oriented snippets with a bit more flexibility.
 
 ## v0.2.3, 2016-03-29
 - Fix critical error when setResource is called repeatedly (e.g. iterating over items)
@@ -27,7 +28,7 @@ information about each fixed issue.
 - Make $service->pathVariables public
 
 ## v0.1.2, 2016-01-20
-- Fix/add [[+resource]] path placeholder 
+- Fix/add [[+resource]] path placeholder
 
 ## v0.1.1, 2015-12-29
 - Fix incorrect templatesPath (should be templates_path) config option in _getTplChunk

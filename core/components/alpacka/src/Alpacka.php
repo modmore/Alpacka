@@ -3,6 +3,11 @@
 namespace modmore\Alpacka;
 
 // Load functions that may be missing in certain environments
+use MODX\Revolution\modContext;
+use MODX\Revolution\modResource;
+use MODX\Revolution\modSystemSetting;
+use MODX\Revolution\modX;
+
 require_once dirname(__FILE__) . '/functions.php';
 
 class Alpacka
@@ -31,7 +36,7 @@ class Alpacka
      * The working context for this request. This is set by calling $this->setResource or $this->setWorkingContext
      * and needs to be an initialised context. Used for getting context-specific settings for example.
      *
-     * @var \modContext
+     * @var \modContext|modContext
      */
     public $wctx;
 
@@ -40,7 +45,7 @@ class Alpacka
      * (in a plugin, or snippet) to fill this properly. The resource object is used in path placeholders among other
      * things.
      *
-     * @var \modResource
+     * @var \modResource|modResource
      */
     public $resource;
 
@@ -214,7 +219,7 @@ class Alpacka
      */
     public function setWorkingContext($key)
     {
-        if ($key instanceof \modResource) {
+        if ($key instanceof \modResource || $key instanceof modResource) {
             $key = $key->get('context_key');
         }
         if (empty($key)) {
@@ -222,8 +227,7 @@ class Alpacka
         }
         $this->wctx = $this->modx->getContext($key);
         if (!$this->wctx) {
-            $this->modx->log(\modX::LOG_LEVEL_ERROR, 'Error loading working context ' . $key, '', __METHOD__, __FILE__,
-                __LINE__);
+            $this->modx->log(\modX::LOG_LEVEL_ERROR, 'Error loading working context ' . $key, '', __METHOD__, __FILE__, __LINE__);
 
             return false;
         }
@@ -266,7 +270,7 @@ class Alpacka
 
             default:
                 // otherwise look for a transliteration service class (i.e. Translit package) that will accept named transliteration tables
-                if ($this->modx instanceof \modX) {
+                if ($this->modx instanceof \modX || $this->modx instanceof modX) {
                     if ($transliterate = $this->modx->getService('translit', $translitClass, $translitClassPath)) {
                         $value = $transliterate->translate($value, $translit);
                     }
@@ -287,10 +291,13 @@ class Alpacka
     /**
      * Sets the current resource to an internal variable, and also updates the working context.
      *
-     * @param \modResource $resource
+     * @param \modResource|modResource $resource
      */
-    public function setResource(\modResource $resource)
+    public function setResource($resource)
     {
+        if (!($resource instanceof \modResource) && !($resource instanceof modResource)) {
+            throw new \RuntimeException('Invalid parameter provided for $resource, not a type of modResource: ' . get_class($resource));
+        }
         $this->resource = $resource;
         $this->setWorkingContext($resource->get('context_key'));
 
@@ -467,7 +474,7 @@ class Alpacka
         ));
         $c->limit(0);
 
-        /** @var \modSystemSetting[] $iterator */
+        /** @var \modSystemSetting[]|modSystemSetting[] $iterator */
         $iterator = $this->modx->getIterator('modSystemSetting', $c);
         foreach ($iterator as $setting) {
             $key = $setting->get('key');
@@ -496,7 +503,7 @@ class Alpacka
         ));
         $c->limit(0);
 
-        /** @var \modSystemSetting[] $iterator */
+        /** @var \modSystemSetting[]|modSystemSetting[] $iterator */
         $iterator = $this->modx->getIterator('modContextSetting', $c);
         foreach ($iterator as $setting) {
             $key = $setting->get('key');

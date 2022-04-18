@@ -4,21 +4,22 @@ namespace modmore\Alpacka;
 
 use modmore\Alpacka\Exceptions\InvalidPropertyException;
 use modmore\Alpacka\Properties\SnippetProperty;
+use MODX\Revolution\modX;
 
 /**
  * Class Snippet
- * 
+ *
  * A basic implementation of a slightly more object oriented snippet for MODX. The generic way to call these snippets
  * is using $service->runSnippet('ClassName', $scriptProperties);
- * 
+ *
  * @package modmore\Alpacka
  */
 abstract class Snippet
 {
     /** @var Alpacka $service */
     public $service;
-    
-    /** @var \modX $modx */
+
+    /** @var \modX|modX $modx */
     public $modx;
 
     /**
@@ -33,8 +34,8 @@ abstract class Snippet
 
     /**
      * Snippet constructor. Enable strict mode to get exceptions thrown in possibly invalid situations, which might
-     * flag issues during development, but may also result in false-positives while in use. 
-     * 
+     * flag issues during development, but may also result in false-positives while in use.
+     *
      * @param Alpacka $service
      * @param bool $strict
      */
@@ -48,8 +49,8 @@ abstract class Snippet
     }
 
     /**
-     * Execute the snippet. 
-     * 
+     * Execute the snippet.
+     *
      * @param array $properties
      * @return string
      * @throws InvalidPropertyException
@@ -64,15 +65,15 @@ abstract class Snippet
     /**
      * Defines the available properties for this snippet. This must be done using an array
      * of SnippetProperty instances, where those instances are sort-of value objects that
-     * check the permitted values and store a default value. 
-     * 
+     * check the permitted values and store a default value.
+     *
      * @return SnippetProperty[]
      */
     abstract public function getPropertiesDefinition();
 
     /**
-     * This is where the actual snippet logic goes. 
-     * 
+     * This is where the actual snippet logic goes.
+     *
      * @return string
      */
     abstract public function process();
@@ -101,7 +102,7 @@ abstract class Snippet
     /**
      * Sets the specified values to the snippet. Any property that is not known will get ignored, and
      * when $strict was enabled when creating the snippet instance it will also throw an InvalidPropertyException.
-     * 
+     *
      * @param array $properties
      * @throws InvalidPropertyException
      */
@@ -114,8 +115,8 @@ abstract class Snippet
 
     /**
      * Gets the value for a property. You can't define a default per call, as that is handled in the snippet
-     * definition instead to ensure consistency. 
-     * 
+     * definition instead to ensure consistency.
+     *
      * @param $key
      * @return mixed
      * @throws InvalidPropertyException
@@ -150,8 +151,8 @@ abstract class Snippet
     }
 
     /**
-     * Logs a message into the debug log for the snippet. 
-     * 
+     * Logs a message into the debug log for the snippet.
+     *
      * @param $message
      */
     final public function debug($message)
