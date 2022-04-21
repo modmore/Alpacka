@@ -116,7 +116,7 @@ class Alpacka
         if ($this->loadPackage && ($this->namespace !== 'alpacka')) {
             $this->modx->addPackage($this->namespace, $this->config['model_path']);
         }
-        if ($this->loadLexicon && ($this->namespace !== 'alpacka')) {
+        if ($this->loadLexicon && ($this->namespace !== 'alpacka') && $this->modx->getService('lexicon', 'modLexicon')) {
             $this->modx->lexicon->load($this->namespace . ':default');
         }
     }
