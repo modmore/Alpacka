@@ -1,20 +1,30 @@
-++ Alpacka 1.0.1-pl
-++ Released on 2022-04-18
-+++++++++++++++++++++++++
+Alpacka 1.0.2-pl
+----------------
+Released on 2022-04-21
+
+- Fix fatal error in edge case where modLexicon is not yet loaded as a service
+
+Alpacka 1.0.1-pl
+----------------
+Released on 2022-04-18
+
 - Fix a few MODX3 incompatibility issues and typehints
 
-++ Alpacka 1.0.0-pl
-++ Released on 2018-01-22
-+++++++++++++++++++++++++
+Alpacka 1.0.0-pl
+----------------
+Released on 2018-01-22
+
 - Make sure left-over placeholders are removed in parsePathPlaceholders
 - Read assets_url and core_path from settings before using config constants [S9752]
 
-++ Alpacka 0.4.0-rc2
-++ Released on 2016-08-04
-+++++++++++++++++++++++++
+Alpacka 0.4.0-rc2
+-----------------
+Released on 2016-08-04
+
 - Fix fatal errors on installs that have a renamed core folder
 
-++ Alpacka 0.4.0-rc1
-++ Released on 2016-08-01
-+++++++++++++++++++++++++
+Alpacka 0.4.0-rc1
+-----------------
+Released on 2016-08-01
+
 - Now available as a MODX Extra (transport package) for shared installations.
