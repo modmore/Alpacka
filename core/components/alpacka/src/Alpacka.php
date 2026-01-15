@@ -534,11 +534,11 @@ class Alpacka
      * including strings "false" and "no" which are sometimes set that way by ExtJS.
      *
      * @param string $name
-     * @param array $options
-     * @param bool $default
+     * @param array|null $options
+     * @param mixed $default
      * @return bool
      */
-    public function getBooleanOption($name, array $options = null, $default = null) {
+    public function getBooleanOption($name, ?array $options = null, $default = null) {
         $option = $this->getOption($name, $options, $default);
         return $this->castValueToBool($option);
     }
