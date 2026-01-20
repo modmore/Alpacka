@@ -3,6 +3,7 @@ Alpacka 1.1.0-pl
 Released on 2026-01-20
 
 - Increase minimum PHP version to 7.4
+- Fix PHP 8.4 deprecation warning for implicit nullable type in getBooleanOption [#8]
 
 Alpacka 1.0.2-pl
 ----------------

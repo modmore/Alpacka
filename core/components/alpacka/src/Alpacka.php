@@ -538,7 +538,7 @@ class Alpacka
      * @param bool $default
      * @return bool
      */
-    public function getBooleanOption($name, array $options = null, $default = null) {
+    public function getBooleanOption($name, ?array $options = null, $default = null) {
         $option = $this->getOption($name, $options, $default);
         return $this->castValueToBool($option);
     }
