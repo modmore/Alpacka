@@ -16,7 +16,7 @@ class ComposerStaticInitd530de204ef18056db76679ad2b19aa5
     public static $prefixDirsPsr4 = array (
         'modmore\\Alpacka\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
+            0 => __DIR__ . '/../../../../..' . '/core/components/alpacka/src',
         ),
     );
 
